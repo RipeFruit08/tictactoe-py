@@ -1,7 +1,6 @@
+BOARD_DIM = 3
 BOARD = [
-    ['-', '-', '-'],
-    ['-', '-', '-'],
-    ['-', '-', '-']
+    ['-']*BOARD_DIM for _ in range(BOARD_DIM)
 ]
 
 def print_board(board):
@@ -54,29 +53,57 @@ def determine_winner():
                 x_count += 1
             elif val == "O":
                 o_count += 1
-        if x_count == 3:
-            print("Player One wins!")
-            exit()
-        elif o_count == 3:
-            print("Player Two wins!")
-            exit()
+        win_cond(x_count, o_count)
     # check columns
-    for row in range(board_dim):
+    for col in range(board_dim):
         x_count = 0
         o_count = 0
-        for col in range(board_dim):
+        for row in range(board_dim):
             val = BOARD[row][col]
             if val == "X":
                 x_count += 1
             elif val == "O":
                 o_count += 1
-        if x_count == 3:
-            print("Player One wins!")
-            exit()
-        elif o_count == 3:
-            print("Player Two wins!")
-            exit()
+        win_cond(x_count, o_count)
     # check diagonals
+    # diagonals are either [(0,0), (1,1), (2,2)]
+    #         or           [(2,0), (1,1), (0,2)]
+
+    # first diagonal (back slash)
+    x_count = 0
+    o_count = 0
+    for coord in range(board_dim):
+        val = BOARD[coord][coord]
+        if val == "X":
+            x_count += 1
+        elif val == "O":
+            o_count += 1
+    win_cond(x_count, o_count)
+
+    # second diagonal (forward slash)
+    x_count = 0
+    o_count = 0
+    for coord in range(board_dim):
+        val = BOARD[(board_dim-1)-coord][coord]
+        if val == "X":
+            x_count += 1
+        elif val == "O":
+            o_count += 1
+    win_cond(x_count, o_count)
+
+
+            
+def win_cond(x_count, o_count):
+    playerNumStr = ""
+    if x_count == BOARD_DIM:
+        playerNumStr = "One"
+    elif o_count == BOARD_DIM:
+        playerNumStr = "Two"
+    else:
+        return
+    print_board(BOARD)
+    print("Player " + playerNumStr + " wins!")
+    exit()
     
 
 def main():
