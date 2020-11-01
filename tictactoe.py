@@ -33,7 +33,7 @@ def process_cmd(cmd, player_one):
         res = sanitize_input(cmd)
         if res:
             row, col = res[0], res[1]
-            BOARD[row][col] = val
+            BOARD[row][col] = "X" if player_one else "O"
             return True
         else:
             # should be returning false 
@@ -54,35 +54,36 @@ def sanitize_input(cmd):
     if row >= BOARD_DIM or col >= BOARD_DIM:
         print("This was not a valid move, try again")
         return False
-    val = "X" if player_one else "O"
     if BOARD[row][col] == "X" or BOARD[row][col] == "O":
         print("This was not a valid move, try again")
         return False
     return (row, col)
 
-def determine_winner():
+"""
+checks either all rows or all cols for a winning condition
+
+:param flag: True if checking rows, False if checking cols
+:return: None
+"""
+def checkRowsOrCols(flag):
     # check rows
     for row in range(BOARD_DIM):
         x_count = 0
         o_count = 0
         for col in range(BOARD_DIM):
-            val = BOARD[row][col]
+            if flag:
+                val = BOARD[row][col]
+            else:
+                val = BOARD[col][row]
             if val == "X":
                 x_count += 1
             elif val == "O":
                 o_count += 1
         win_cond(x_count, o_count)
-    # check columns
-    for col in range(BOARD_DIM):
-        x_count = 0
-        o_count = 0
-        for row in range(BOARD_DIM):
-            val = BOARD[row][col]
-            if val == "X":
-                x_count += 1
-            elif val == "O":
-                o_count += 1
-        win_cond(x_count, o_count)
+
+def determine_winner():
+    checkRowsOrCols(True)
+    checkRowsOrCols(False)
     # check diagonals
     # diagonals are either [(0,0), (1,1), (2,2)]
     #         or           [(2,0), (1,1), (0,2)]
@@ -109,8 +110,6 @@ def determine_winner():
             o_count += 1
     win_cond(x_count, o_count)
 
-
-            
 def win_cond(x_count, o_count):
     playerNumStr = ""
     if x_count == BOARD_DIM:
@@ -123,9 +122,5 @@ def win_cond(x_count, o_count):
     print("Player " + playerNumStr + " wins!")
     exit()
     
-
-def main():
-    repl()
-
 if __name__ == "__main__":
-    main()
+    repl()
